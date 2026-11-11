@@ -1,0 +1,24 @@
+; Routine at FB58
+c$FB58 PUSH AF       ;
+ $FB59 NOP           ;
+ $FB5A NOP           ;
+ $FB5B NOP           ;
+ $FB5C CALL $FB61    ;
+ $FB5F POP AF        ;
+ $FB60 RET           ;
+*$FB61 PUSH AF       ;
+ $FB62 RRCA          ;
+ $FB63 RRCA          ;
+ $FB64 RRCA          ;
+ $FB65 RRCA          ;
+ $FB66 CALL $FB6A    ;
+ $FB69 POP AF        ;
+*$FB6A AND $0F       ;
+ $FB6C ADD A,$90     ;
+ $FB6E DAA           ;
+ $FB6F ADC A,$40     ;
+ $FB71 DAA           ;
+ $FB72 LD C,A        ;
+ $FB73 CALL $F86F    ;
+ $FB76 RET           ;
+

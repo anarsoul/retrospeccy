@@ -1,0 +1,28 @@
+; Routine at F800
+c$F800 JP $FEE9      ;
+ $F803 JP $FE9E      ;
+ $F806 RET           ;
+ $F807 NOP           ;
+ $F808 NOP           ;
+ $F809 JP $F86F      ;
+ $F80C RET           ;
+ $F80D NOP           ;
+ $F80E NOP           ;
+ $F80F RET           ;
+ $F810 NOP           ;
+ $F811 NOP           ;
+ $F812 JP $FA70      ;
+ $F815 JP $FB58      ;
+ $F818 JP $FA59      ;
+ $F81B JP $FEBB      ;
+ $F81E JP $FB1F      ;
+ $F821 JP $FB32      ;
+ $F824 JP $FD14      ;
+ $F827 JP $FD1A      ;
+ $F82A JP $FB82      ;
+ $F82D RET           ;
+ $F82E NOP           ;
+ $F82F NOP           ;
+ $F830 JP $FB7C      ;
+ $F833 JP $FB77      ;
+

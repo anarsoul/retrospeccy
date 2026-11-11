@@ -1,0 +1,6 @@
+   10 	LD	IX,(23563)
+   20 	LD	A,(IX+4)
+   30 	RRCA
+   40 	LD	B,0
+   50 	LD	C,A
+   60 	RET

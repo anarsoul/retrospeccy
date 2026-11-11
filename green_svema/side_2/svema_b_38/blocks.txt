@@ -1,0 +1,2 @@
+01 header type=3 name='EDIT-3.EXE' len=640 p1=61000 p2=0
+02 data flag=FF len=640 OK -> disasm

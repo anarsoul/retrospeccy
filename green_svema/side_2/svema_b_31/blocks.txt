@@ -1,0 +1,4 @@
+01 header type=3 name='Haintmonc$' len=39 p1=55000 p2=0
+02 data flag=FF len=39 OK -> disasm
+03 header type=3 name='HAINTMON ¯' len=1170 p1=14446 p2=32768
+04 data flag=FF len=1170 OK -> disasm

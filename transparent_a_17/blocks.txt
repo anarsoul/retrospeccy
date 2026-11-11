@@ -1,0 +1,1 @@
+01 header type=0 name='Save Game ' len=967 p1=1 p2=942 | data flag=FF got=967 OK -> BASIC

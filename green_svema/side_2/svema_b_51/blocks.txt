@@ -1,0 +1,2 @@
+01 header type=0 name='VOICER    ' len=2292 p1=32768 p2=2292
+02 data flag=FF len=2292 OK -> BASIC

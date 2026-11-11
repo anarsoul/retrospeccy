@@ -1,0 +1,2 @@
+01 header type=3 name='PRINTOKCO2' len=610 p1=58058 p2=32768
+02 data flag=FF len=610 OK -> disasm

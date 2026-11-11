@@ -1,0 +1,34 @@
+; Routine at FA70
+c$FA70 PUSH BC       ;
+ $FA71 PUSH DE       ;
+ $FA72 PUSH HL       ;
+ $FA73 CALL $FA7A    ;
+ $FA76 POP HL        ;
+ $FA77 POP DE        ;
+ $FA78 POP BC        ;
+ $FA79 RET           ;
+*$FA7A LD HL,$FA94   ;
+ $FA7D LD D,$08      ;
+*$FA7F LD C,(HL)     ;
+ $FA80 INC HL        ;
+ $FA81 LD B,(HL)     ;
+ $FA82 INC HL        ;
+ $FA83 IN A,(C)      ;
+ $FA85 AND $1F       ;
+ $FA87 CP $1F        ;
+ $FA89 JR NZ,$FA91   ;
+ $FA8B DEC D         ;
+ $FA8C JR NZ,$FA7F   ;
+ $FA8E LD A,$00      ;
+ $FA90 RET           ;
+*$FA91 LD A,$FF      ;
+ $FA93 RET           ;
+ $FA94 CP $FE        ;
+ $FA96 CP $FD        ;
+ $FA98 CP $FB        ;
+ $FA9A CP $F7        ;
+ $FA9C CP $EF        ;
+ $FA9E CP $DF        ;
+ $FAA0 CP $BF        ;
+ $FAA2 CP $7F        ;
+

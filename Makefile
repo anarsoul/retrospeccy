@@ -1,0 +1,50 @@
+# Builds README.html (and index.html for GitHub Pages) from README.md with
+# cmark-gfm (no pandoc needed).
+# readme_ids.py gives the headings ids so that links to sections work.
+CMARK ?= cmark-gfm
+TITLE := Архив кассет ZX Spectrum: Балтик
+
+define HEAD
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$(TITLE)</title>
+<style>
+body { max-width: 60em; margin: 2em auto; padding: 0 1em; font: 16px/1.5 sans-serif; color: #222; background: #fff; }
+table { border-collapse: collapse; margin: 1em 0; }
+th, td { border: 1px solid #bbb; padding: .3em .6em; text-align: left; vertical-align: top; }
+th { background: #eee; }
+code { font-family: monospace; background: #f3f3f3; padding: 0 .2em; }
+img { max-width: 100%; height: auto; }
+table { display: block; max-width: 100%; overflow-x: auto; }
+h2 { border-bottom: 1px solid #ccc; padding-bottom: .2em; margin-top: 2em; }
+@media (prefers-color-scheme: dark) {
+  body { color: #ddd; background: #1b1b1b; }
+  th { background: #333; }
+  th, td { border-color: #555; }
+  code { background: #2c2c2c; }
+  h2 { border-color: #555; }
+}
+</style>
+</head>
+<body>
+endef
+export HEAD
+
+all: README.html index.html
+
+# GitHub Pages serves index.html; it is the same page.
+index.html: README.html
+	cp $< $@
+
+%.html: %.md Makefile readme_ids.py
+	{ printf '%s\n' "$$HEAD"; \
+	  $(CMARK) --extension table --extension autolink $< | ./readme_ids.py; \
+	  printf '</body>\n</html>\n'; } > $@
+
+clean:
+	rm -f README.html index.html
+
+.PHONY: all clean

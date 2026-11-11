@@ -1,0 +1,2 @@
+01 header type=0 name='READ-HEADb' len=1320 p1=32782 p2=1225
+02 data flag=FF len=1320 OK -> BASIC

@@ -1,0 +1,4 @@
+01 header type=0 name='E.G.-BASIC' len=828 p1=32771 p2=793
+02 data flag=FF len=828 OK -> BASIC
+03 header type=3 name='E.G. - ¯  ' len=732 p1=63000 p2=32793
+04 data flag=FF len=732 OK -> disasm

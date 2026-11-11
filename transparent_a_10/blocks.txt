@@ -1,0 +1,2 @@
+decoded from transparent_a_10.wav with wav2tap.py (MakeTZX lost sync, see .tzx)
+01 header type=3 name=Musicans$2 len=6912 p1=24320 p2=0 | data flag=FF got=6912 OK

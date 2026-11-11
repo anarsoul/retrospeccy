@@ -1,0 +1,25 @@
+   10 	LD	IX,(23563)
+   20 	LD	H,(IX+5)
+   30 	LD	L,(IX+4)
+   40 	LD	D,0
+   50 	LD	A,(HL)
+   60 	INC	HL
+   70 	CALL	NIBLE
+   80 	LD	D,A
+   90 	RLC	D
+  100 	RLC	D
+  110 	RLC	D
+  120 	RLC	D
+  130 	LD	A,(HL)
+  140 	CALL	NIBLE
+  150 	XOR	D
+  160 	LD	C,A
+  170 	LD	B,0
+  180 	RET
+  190 NIBLE	SBC	A,65
+  200 	JR	C,N2
+  210 	ADD	A,10
+  220 	RET
+  230 N2	ADD	A,65
+  240 	SUB	48
+  250 	RET

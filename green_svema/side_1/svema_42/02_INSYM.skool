@@ -1,0 +1,19 @@
+; Routine at E685
+c$E685 PUSH BC       ;
+ $E686 PUSH DE       ;
+ $E687 PUSH HL       ;
+*$E688 LD BC,$00FE   ;
+ $E68B IN A,(C)      ;
+ $E68D AND $1F       ;
+ $E68F CP $1F        ;
+ $E691 JR Z,$E688    ;
+ $E693 CALL $E5A6    ;
+ $E696 CP $FF        ;
+ $E698 JR Z,$E688    ;
+ $E69A CP $FE        ;
+ $E69C JR Z,$E688    ;
+ $E69E POP HL        ;
+ $E69F POP DE        ;
+ $E6A0 POP BC        ;
+ $E6A1 RET           ;
+

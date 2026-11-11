@@ -1,0 +1,12 @@
+01 header type=0 name='Radio BAS.' len=258 p1=1 p2=258
+02 data flag=FF len=258 OK -> BASIC
+03 header type=3 name='RadioBlok ' len=1658 p1=63599 p2=32825
+04 data flag=FF len=1658 OK -> disasm
+05 header type=3 name='INT CODE  ' len=299 p1=62976 p2=0
+06 data flag=FF len=299 OK -> disasm
+07 header type=3 name='TABLE MON.' len=54 p1=63488 p2=943
+08 data flag=FF len=54 OK -> disasm
+09 header type=3 name='Monitor co' len=651 p1=58000 p2=32768
+10 data flag=FF len=651 OK -> disasm
+11 header type=3 name='Radio Font' len=1024 p1=60000 p2=32802
+12 data flag=FF len=1024 OK -> font?, disasm

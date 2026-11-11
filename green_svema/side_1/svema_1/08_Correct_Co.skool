@@ -1,0 +1,16 @@
+; Routine at F852
+c$F852 LD HL,$6590   ;
+ $F855 LD B,$90      ;
+*$F857 PUSH BC       ;
+ $F858 LD B,$88      ;
+*$F85A LD A,$64      ;
+ $F85C SUB (HL)      ;
+ $F85D JP M,$F863    ;
+ $F860 LD A,$00      ;
+ $F862 LD (HL),A     ;
+*$F863 INC HL        ;
+ $F864 DJNZ $F85A    ;
+ $F866 POP BC        ;
+ $F867 DJNZ $F857    ;
+ $F869 RET           ;
+

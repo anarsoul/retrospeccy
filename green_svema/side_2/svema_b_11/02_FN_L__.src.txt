@@ -1,0 +1,9 @@
+   10 	LD	IX,(23563)
+   20 	LD	H,(IX+5)
+   30 	LD	L,(IX+4)
+   40 	LD	D,(IX+13)
+   50 	LD	E,(IX+12)
+   60 	LD	B,(IX+21)
+   70 	LD	C,(IX+20)
+   80 	LDIR
+   90 	RET

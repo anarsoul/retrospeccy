@@ -1,0 +1,2 @@
+01 header type=3 name='EDIT.TXT  ' len=3321 p1=38866 p2=943
+02 data flag=FF len=3321 OK -> asm source text (266 lines)

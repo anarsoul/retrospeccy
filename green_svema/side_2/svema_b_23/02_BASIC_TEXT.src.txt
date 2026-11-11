@@ -1,0 +1,396 @@
+    1 	ORG	63000
+    2 	ENT	63000
+    3 	LD	IX,(23563)
+    4 	LD	A,(IX+22)
+    5 	LD	B,0
+    6 L3	SBC	A,9
+    7 	INC	B
+    8 	JR	NC,L3
+    9 	DEC	B
+   10 	LD	A,(23728)
+   11 	CP	1
+   12 	JR	Z,L4
+   13 	LD	B,(IX+22)
+   14 L4	LD	A,B
+   15 	LD	(23296),A
+   16 	LD	B,0
+   17 	LD	C,(IX+22)
+   18 	LD	H,(IX+21)
+   19 	LD	L,(IX+20)
+   20 	LD	DE,23297
+   21 	LDIR
+   22 	LD	HL,23296
+   23 	LD	D,(IX+4)
+   24 	LD	E,(IX+12)
+   25 PRINT	LD	(INPUT),HL
+   26 	LD	A,D
+   27 	AND	#38
+   28 	ADD	A,A
+   29 	ADD	A,A
+   30 	ADD	A,E
+   31 	LD	E,A
+   32 	LD	A,D
+   33 	RRA
+   34 	RRA
+   35 	RRA
+   36 	AND	#18
+   37 	LD	C,A
+   38 	LD	A,D
+   39 	AND	#7
+   40 	ADD	A,C
+   41 	LD	D,A
+   42 	LD	A,(23729)
+   43 	ADD	A,D
+   44 	LD	D,A
+   45 	LD	HL,(INPUT)
+   46 	LD	(OUTLIN),DE
+   47 	LD	A,(HL)
+   48 	AND	A
+   49 	RET	Z
+   50 	LD	C,A
+   51 PROLET	LD	(OUTPUT),DE
+   52 	INC	HL
+   53 	LD	(INPUT),HL
+   54 	LD	A,(HL)
+   55 	CP	255
+   56 	JR	NZ,CHAR
+   57 	LD	DE,(OUTLIN)
+   58 	LD	A,E
+   59 	ADD	A,#20
+   60 	LD	E,A
+   61 	RET	NC
+   62 	LD	A,D
+   63 	ADD	A,8
+   64 	CP	#58
+   65 	RET	NC
+   66 	LD	D,A
+   67 	LD	(OUTLIN),DE
+   68 	JR	REJOIN
+   69 CHAR	LD	L,A
+   70 	LD	H,0
+   71 	ADD	HL,HL
+   72 	ADD	HL,HL
+   73 	ADD	HL,HL
+   74 	LD	DE,(CHASET)
+   75 	ADD	HL,DE
+   76 	LD	DE,(OUTPUT)
+   77 	LD	A,D
+   78 	CP	#58
+   79 	RET	NC
+   80 	LD	B,8
+   81 EIGHT	LD	A,(HL)
+   82 	PUSH	AF
+   83 	DI
+   84 M1	LD	A,130
+   85 	OUT	(126),A
+   86 	POP	AF
+   87 	PUSH	BC
+   88 	LD	B,A
+   89 	LD	A,(DE)
+   90 	XOR	B
+   91 	POP	BC
+   92 	LD	(DE),A
+   93 	LD	A,(23728)
+   94 	CP	1
+   95 	JR	NZ,EXIT
+   96 	JR	Z,ATTRS
+   97 EXIT	INC	HL
+   98 M2	LD	A,2
+   99 	OUT	(126),A
+  100 	EI
+  101 	LD	A,D
+  102 	AND	7
+  103 	INC	A
+  104 	CP	8
+  105 	JR	NZ,NONEW
+  106 	LD	A,D
+  107 	AND	#F8
+  108 	LD	D,A
+  109 	LD	A,E
+  110 	ADD	A,#20
+  111 	LD	E,A
+  112 	JR	NC,NEXTSL
+  113 	LD	A,D
+  114 	ADD	A,8
+  115 	LD	D,A
+  116 NONEW	INC	D
+  117 NEXTSL	DJNZ	EIGHT
+  118 	LD	DE,(OUTPUT)
+  119 NEXTLT	INC	E
+  120 	JR	NZ,REJOIN
+  121 	LD	A,D
+  122 	ADD	A,8
+  123 	LD	A,D
+  124 REJOIN	LD	HL,(INPUT)
+  125 	DEC	C
+  126 	JR	NZ,PROLET
+  127 	RET
+  128 ATTRS	PUSH	BC
+  129 	PUSH	HL
+  130 	LD	HL,(INPUT)
+  131 	INC	HL
+  132 	LD	(INPUT),HL
+  133 	LD	BC,6144
+  134 	EX	DE,HL
+  135 	ADD	HL,BC
+  136 	EX	DE,HL
+  137 	LD	A,(HL)
+  138 	LD	(DE),A
+  139 	EX	DE,HL
+  140 	SBC	HL,BC
+  141 	EX	DE,HL
+  142 	POP	HL
+  143 	POP	BC
+  144 	JR	EXIT
+  145 OUTLIN	DEFW	0
+  146 OUTPUT	DEFW	0
+  147 INPUT	DEFW	0
+  148 CHASET	EQU	23606
+  149 FN_B()	CALL	7962
+  150 	LD	HL,65535
+  151 	SBC	HL,BC
+  152 	LD	B,H
+  153 	LD	C,L
+  154 	RET
+  155 FN_C$	LD	IX,(23563)
+  156 	LD	A,(IX+4)
+  157 	LD	HL,23296
+  158 	CALL	AOUT
+  159 	RET
+  160 AOUT	PUSH	AF
+  161 	RRCA
+  162 	RRCA
+  163 	RRCA
+  164 	RRCA
+  165 	CALL	NIBLE
+  166 	POP	AF
+  167 NIBLE	AND	15
+  168 	ADD	A,#90
+  169 	DAA
+  170 	ADC	A,#40
+  171 	DAA
+  172 	LD	(HL),A
+  173 	INC	HL
+  174 	LD	BC,0
+  175 	RET
+  176 FN_D()	LD	IX,(23563)
+  177 	LD	H,(IX+5)
+  178 	LD	L,(IX+4)
+  179 	LD	D,0
+  180 	LD	A,(HL)
+  181 	INC	HL
+  182 	CALL	NIBLE2
+  183 	LD	D,A
+  184 	RLC	D
+  185 	RLC	D
+  186 	RLC	D
+  187 	RLC	D
+  188 	LD	A,(HL)
+  189 	CALL	NIBLE2
+  190 	XOR	D
+  191 	LD	C,A
+  192 	LD	B,0
+  193 	RET
+  194 NIBLE2
+  195 	JR	C,N2
+  196 	ADD	A,10
+  197 	RET
+  198 N2	ADD	A,65
+  199 	SUB	48
+  200 	RET
+  201 FN_F()	LD	IX,(23563)
+  202 	LD	H,(IX+5)
+  203 	LD	L,(IX+4)
+  204 	LD	C,(HL)
+  205 	INC	HL
+  206 	LD	B,(HL)
+  207 	RET
+  208 FN_G()	LD	IX,(23563)
+  209 	LD	H,(IX+5)
+  210 	LD	L,(IX+4)
+  211 	LD	B,(IX+13)
+  212 	LD	C,(IX+12)
+  213 	LD	(HL),C
+  214 	INC	HL
+  215 	LD	(HL),B
+  216 	RET
+  217 FN_H()	LD	IX,(23563)
+  218 	LD	B,(IX+5)
+  219 	LD	A,(IX+13)
+  220 	AND	B
+  221 	LD	B,A
+  222 	LD	C,(IX+4)
+  223 	LD	A,(IX+12)
+  224 	AND	C
+  225 	LD	C,A
+  226 	RET
+  227 FN_I()	LD	IX,(23563)
+  228 	LD	B,(IX+5)
+  229 	LD	A,(IX+13)
+  230 	OR	B
+  231 	LD	B,A
+  232 	LD	C,(IX+4)
+  233 	LD	A,(IX+12)
+  234 	OR	C
+  235 	LD	C,A
+  236 	RET
+  237 FN_J()	LD	IX,(23563)
+  238 	LD	B,(IX+5)
+  239 	LD	A,(IX+13)
+  240 	XOR	B
+  241 	LD	B,A
+  242 	LD	C,(IX+4)
+  243 	LD	A,(IX+12)
+  244 	XOR	C
+  245 	LD	C,A
+  246 	RET
+  247 FN_K$	LD	IX,(23563)
+  248 	LD	A,(IX+4)
+  249 	LD	B,8
+  250 	LD	HL,23296
+  251 B1	BIT	7,A
+  252 	JR	Z,ZERO
+  253 	JR	NZ,ONE
+  254 B2	INC	HL
+  255 	RLC	A
+  256 	DJNZ	B1
+  257 	LD	C,0
+  258 	RET
+  259 ZERO	LD	C,"0"
+  260 	LD	(HL),C
+  261 	JR	B2
+  262 ONE	LD	C,"1"
+  263 	LD	(HL),C
+  264 	JR	B2
+  265 FN_L()	LD	IX,(23563)
+  266 	LD	H,(IX+5)
+  267 	LD	L,(IX+4)
+  268 	LD	D,(IX+13)
+  269 	LD	E,(IX+12)
+  270 	LD	B,(IX+21)
+  271 	LD	C,(IX+20)
+  272 	LDIR
+  273 	RET
+  274 FN_N()	LD	IX,(23563)
+  275 	LD	A,(IX+4)
+  276 	RRCA
+  277 	LD	B,0
+  278 	LD	C,A
+  279 	RET
+  280 FN_O()	LD	IX,(23563)
+  281 	LD	A,(IX+4)
+  282 	RLA
+  283 	LD	B,0
+  284 	LD	C,A
+  285 	RET
+  286 FN_P()	LD	IX,(23563)
+  287 	LD	A,(IX+4)
+  288 	SRL	A
+  289 	LD	B,0
+  290 	LD	C,A
+  291 	RET
+  292 FN_Q()	LD	IX,(23563)
+  293 	LD	A,(IX+4)
+  294 	SLA	A
+  295 	LD	B,0
+  296 	LD	C,A
+  297 	RET
+  298 FN_V()	LD	IX,(23563)
+  299 	LD	H,(IX+5)
+  300 	LD	L,(IX+4)
+  301 	LD	B,(IX+13)
+  302 	LD	C,(IX+12)
+  303 	LD	D,(IX+20
+  304 A0	LD	A,D
+  305 	LD	(HL),A
+  306 	INC	HL
+  307 	DEC	BC
+  308 	LD	A,B
+  309 	OR	C
+  310 	JR	NZ,A0
+  311 	RET
+  312 FN_W()	DI
+  313 	LD	A,130
+  314 	OUT	(126),A
+  315 	LD	HL,0
+  316 	LD	BC,6144
+  317 D1	LD	(HL),0
+  318 	INC	HL
+  319 	DEC	BC
+  320 	LD	A,B
+  321 	OR	C
+  322 	JR	NZ,D1
+  323 	LD	HL,6144
+  324 	LD	BC,6144
+  325 D2	LD	A,(23693)
+  326 	LD	(HL),A
+  327 	INC	HL
+  328 	DEC	BC
+  329 	LD	A,B
+  330 	OR	C
+  331 	JR	NZ,D2
+  332 	LD	A,2
+  333 	OUT	(126),A
+  334 	EI
+  335 	RET
+  336 FN_Y()	DI
+  337 	LD	A,130
+  338 	OUT	(126),A
+  339 	LD	HL,0
+  340 	LD	BC,6144
+  341 	LD	DE,16384
+  342 D10	LD	A,(DE)
+  343 	LD	(HL),A
+  344 	INC	HL
+  345 	INC	DE
+  346 	DEC	BC
+  347 	LD	A,B
+  348 	OR	C
+  349 	JR	NZ,D10
+  350 	LD	HL,6144
+  351 	LD	BC,6144
+  352 D20	LD	A,(23693)
+  353 	LD	(HL),A
+  354 	INC	HL
+  355 	DEC	BC
+  356 	LD	A,B
+  357 	OR	C
+  358 	JR	NZ,D20
+  359 	LD	A,2
+  360 	OUT	(126),A
+  361 	EI
+  362 	RET
+  363 FN_Z()	LD	HL,16384
+  364 	LD	BC,6144
+  365 E1	LD	(HL),0
+  366 	INC	HL
+  367 	DEC	BC
+  368 	LD	A,B
+  369 	OR	C
+  370 	JR	NZ,E1
+  371 	RET
+  372 FN_Z$	DI
+  373 	LD	A,252
+  374 	OUT	(126),A
+  375 	LD	HL,16384
+  376 	LD	DE,0
+  377 	LD	BC,6144
+  378 F1	LD	A,(DE)
+  379 	LD	(HL),A
+  380 	INC	HL
+  381 	INC	DE
+  382 	DEC	BC
+  383 	LD	A,B
+  384 	OR	C
+  385 	JR	NZ,F1
+  386 	LD	A,0
+  387 	OUT	(126),A
+  388 	EI
+  389 	RET
+  390 FN_G$	LD	IX,(23563)
+  391 	LD	L,(IX+4)
+  392 	LD	H,(IX+5)
+  393 	LD	A,(IX+12)
+  394 	LD	(23618),HL
+  395 	LD	(23620),A
+  396 	RET

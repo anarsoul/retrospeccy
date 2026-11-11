@@ -1,0 +1,9 @@
+; Routine at FB77
+c$FB77 LD ($FB80),HL ;
+ $FB7A LD SP,HL      ;
+ $FB7B RET           ;
+ $FB7C LD HL,($FB80) ;
+ $FB7F RET           ;
+ $FB80 NOP           ;
+ $FB81 NOP           ;
+

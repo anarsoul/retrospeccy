@@ -1,0 +1,16 @@
+   1 OUT 126,0: BORDER 1: PAPER 1: INK 7: BRIGHT 1: CLS
+   2 LOAD "" CODE : LOAD "" CODE 30000: CLS
+  11 PRINT "     {10}{04}{84}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{8C}{88}{10}{07}"
+  12 PRINT "     {10}{04}{85}{10}{02}S{10}{03}a{10}{04}v{10}{05}e {10}{06}G{10}{07}a{10}{00}m{10}{02}e {10}{03}S{10}{04}i{10}{05}t{10}{06}u{10}{07}a{10}{00}t{10}{02}i{10}{03}o{10}{04}n{10}{05}.{10}{04}{8A}{10}{07}"
+  13 PRINT "     {10}{04}{81}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{83}{82}{10}{07}"
+  14 PRINT '"{12}{01}{10}{02}{11}{06} WARNING!! Using N.M.I. Button, {11}{01}{10}{07}{12}{00}"
+  15 PRINT "{10}{06}{11}{02}{12}{01}16K under ROM and 128K of RAM!!!{12}{00}{11}{01}{10}{07}"
+  16 PRINT '"{12}{01}{11}{03}{10}{06}Don't try save programm if it   {14}{01}doesn't work in TURBO-MODE!     {14}{00}{12}{00}{11}{01}{10}{07}"
+  17 PRINT '"{12}{01}{10}{05}Do you want to restore ROM copy?{12}{00}              ({12}{01}Y{12}{00}/{12}{01}N{12}{00}){10}{07}": PRINT "-->";
+  18 IF  INKEY$ ="y" OR  INKEY$ ="Y" THEN  PRINT "Y": BEEP .0005,34.34: RANDOMIZE  USR 64000: GO TO 21
+  19 IF  INKEY$ ="n" OR  INKEY$ ="N" THEN  PRINT "N": BEEP .0005,34.34: GO TO 21
+  20 GO TO 18
+  21 OUT 126,128
+  22 PRINT '"Now wait, please.": LET a=14446: FOR n=30000 TO 30260: POKE a, PEEK n: LET a=a+1: NEXT n
+  23 POKE 102,243: POKE 103,195: POKE 104,110: POKE 105,56
+  24 PRINT '"{11}{02}{10}{03} Now you may enter NEW and load    your programm. Good luck!!!  "

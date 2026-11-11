@@ -1,0 +1,30 @@
+; Routine at FE9E
+c$FE9E PUSH BC       ;
+ $FE9F PUSH DE       ;
+ $FEA0 PUSH HL       ;
+ $FEA1 CALL $FEA8    ;
+ $FEA4 POP HL        ;
+ $FEA5 POP DE        ;
+ $FEA6 POP BC        ;
+ $FEA7 RET           ;
+*$FEA8 CALL $FA70    ;
+ $FEAB OR A          ;
+ $FEAC JR Z,$FEA8    ;
+ $FEAE CALL $FDC9    ;
+ $FEB1 CP $FF        ;
+ $FEB3 JR Z,$FEA8    ;
+ $FEB5 CP $FE        ;
+ $FEB7 JR Z,$FEA8    ;
+ $FEB9 LD A,A        ;
+ $FEBA RET           ;
+ $FEBB PUSH BC       ;
+ $FEBC PUSH DE       ;
+ $FEBD PUSH HL       ;
+ $FEBE CALL $FEC5    ;
+ $FEC1 POP HL        ;
+ $FEC2 POP DE        ;
+ $FEC3 POP BC        ;
+ $FEC4 RET           ;
+*$FEC5 CALL $FDC9    ;
+ $FEC8 RET           ;
+

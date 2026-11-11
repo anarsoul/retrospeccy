@@ -1,0 +1,27 @@
+   10 	DI
+   20 	LD	A,130
+   30 	OUT	(126),A
+   40 	LD	HL,0
+   50 	LD	BC,6144
+   60 	LD	DE,16384
+   70 D1	LD	A,(DE)
+   80 	LD	(HL),A
+   90 	INC	HL
+  100 	INC	DE
+  110 	DEC	BC
+  120 	LD	A,B
+  130 	OR	C
+  140 	JR	NZ,D1
+  150 	LD	HL,6144
+  160 	LD	BC,6144
+  170 D2	LD	A,(23693)
+  180 	LD	(HL),A
+  190 	INC	HL
+  200 	DEC	BC
+  210 	LD	A,B
+  220 	OR	C
+  230 	JR	NZ,D2
+  240 	LD	A,2
+  250 	OUT	(126),A
+  260 	EI
+  270 	RET

@@ -1,0 +1,19 @@
+; Routine at FA59
+c$FA59 PUSH AF       ;
+ $FA5A PUSH BC       ;
+ $FA5B PUSH DE       ;
+ $FA5C PUSH HL       ;
+ $FA5D CALL $FA65    ;
+ $FA60 POP HL        ;
+ $FA61 POP DE        ;
+ $FA62 POP BC        ;
+ $FA63 POP AF        ;
+ $FA64 RET           ;
+*$FA65 LD A,(HL)     ;
+ $FA66 CP $00        ;
+ $FA68 RET Z         ;
+ $FA69 LD C,A        ;
+ $FA6A CALL $F86F    ;
+ $FA6D INC HL        ;
+ $FA6E JR $FA65      ;
+

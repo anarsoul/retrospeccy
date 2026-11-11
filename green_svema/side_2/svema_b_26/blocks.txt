@@ -1,0 +1,2 @@
+01 header type=0 name='E.G.-BASIC' len=353 p1=1 p2=334
+02 data flag=FF len=353 OK -> BASIC

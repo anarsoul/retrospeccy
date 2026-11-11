@@ -1,0 +1,9 @@
+   10 	LD	HL,16384
+   20 	LD	BC,6144
+   30 E1	LD	(HL),0
+   40 	INC	HL
+   50 	DEC	BC
+   60 	LD	A,B
+   70 	OR	C
+   80 	JR	NZ,E1
+   90 	RET

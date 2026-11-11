@@ -1,0 +1,23 @@
+   10 	ORG	23296
+   20 	LD	HL,30000
+   30 	LD	DE,6912
+   40 NEW	LD	A,(HL)
+   50 	LD	B,8
+   60 AGAIN	RLCA
+   70 	OUT	(63),A
+   80 L1	IN	A,(95)
+   90 	BIT	0,A
+  100 	JR	NZ,L1
+  110 L2	IN	A,(95)
+  120 	BIT	0,A
+  130 	JR	Z,L2
+  140 L3	IN	A,(95)
+  150 	BIT	0,A
+  160 	JR	NZ,L3
+  170 	DJNZ	AGAIN
+  180 	INC	HL
+  190 	DEC	DE
+  200 	LD	A,D
+  210 	OR	E
+  220 	JR	NZ,NEW
+  230 	RET

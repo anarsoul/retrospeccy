@@ -1,0 +1,2 @@
+decoded from transparent_a_19.wav with wav2tap.py, double-speed recording (damaged in the .tzx)
+01 headerless data flag=FF got=38582 OK - T.N.R.EXE, differs from tape 21 in 15 bytes of text

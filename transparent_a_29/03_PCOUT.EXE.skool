@@ -1,0 +1,24 @@
+; Routine at 5B00
+c$5B00 LD HL,$7530   ;
+ $5B03 LD DE,$1B00   ;
+*$5B06 LD A,(HL)     ;
+ $5B07 LD B,$08      ;
+*$5B09 RLCA          ;
+ $5B0A OUT ($3F),A   ;
+*$5B0C IN A,($5F)    ;
+ $5B0E BIT 0,A       ;
+ $5B10 JR NZ,$5B0C   ;
+*$5B12 IN A,($5F)    ;
+ $5B14 BIT 0,A       ;
+ $5B16 JR Z,$5B12    ;
+*$5B18 IN A,($5F)    ;
+ $5B1A BIT 0,A       ;
+ $5B1C JR NZ,$5B18   ;
+ $5B1E DJNZ $5B09    ;
+ $5B20 INC HL        ;
+ $5B21 DEC DE        ;
+ $5B22 LD A,D        ;
+ $5B23 OR E          ;
+ $5B24 JR NZ,$5B06   ;
+ $5B26 RET           ;
+

@@ -1,0 +1,22 @@
+; Routine at FEC9
+c$FEC9 DI            ;
+ $FECA CALL $FEDA    ;
+ $FECD LD A,$F5      ;
+ $FECF LD I,A        ;
+ $FED1 IM 2          ;
+ $FED3 EI            ;
+ $FED4 RET           ;
+ $FED5 DI            ;
+ $FED6 IM 1          ;
+ $FED8 EI            ;
+ $FED9 RET           ;
+*$FEDA LD HL,$F500   ;
+ $FEDD LD BC,$0100   ;
+*$FEE0 LD (HL),$00   ;
+ $FEE2 INC HL        ;
+ $FEE3 DEC BC        ;
+ $FEE4 LD A,B        ;
+ $FEE5 OR C          ;
+ $FEE6 JR NZ,$FEE0   ;
+ $FEE8 RET           ;
+

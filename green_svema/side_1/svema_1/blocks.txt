@@ -1,0 +1,8 @@
+01 header type=3 name='Print text' len=1367 p1=38866 p2=943
+02 data flag=FF len=1367 OK -> asm source text (109 lines)
+03 header type=3 name='Print code' len=192 p1=50000 p2=0
+04 data flag=FF len=192 OK -> disasm
+05 header type=3 name='Musik CODE' len=70 p1=63500 p2=32823
+06 data flag=FF len=70 OK -> disasm
+07 header type=3 name='Correct Co' len=24 p1=63570 p2=943
+08 data flag=FF len=24 OK -> disasm

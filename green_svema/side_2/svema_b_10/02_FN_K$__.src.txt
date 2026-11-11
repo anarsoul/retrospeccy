@@ -1,0 +1,18 @@
+   10 	LD	IX,(23563)
+   20 	LD	A,(IX+4)
+   30 	LD	B,8
+   40 	LD	HL,23296
+   50 B1	BIT	7,A
+   60 	JR	Z,ZERO
+   70 	JR	NZ,ONE
+   80 B2	INC	HL
+   90 	RLC	A
+  100 	DJNZ	B1
+  110 	LD	C,0
+  120 	RET
+  130 ZERO	LD	C,"0"
+  140 	LD	(HL),C
+  150 	JR	B2
+  160 ONE	LD	C,"1"
+  170 	LD	(HL),C
+  180 	JR	B2

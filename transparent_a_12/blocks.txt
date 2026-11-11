@@ -1,0 +1,2 @@
+decoded from transparent_a_12.wav with wav2tap.py (damaged in the .tzx)
+01 header type=3 name=MOUSE.EXE len=414 p1=38882 p2=0 | data flag=FF got=414 OK -> disasm

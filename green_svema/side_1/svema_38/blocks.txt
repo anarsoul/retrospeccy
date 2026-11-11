@@ -1,0 +1,2 @@
+01 header type=3 name='PRINTOK-2 ' len=3934 p1=38866 p2=0
+02 data flag=FF len=3934 OK -> asm source text (328 lines)

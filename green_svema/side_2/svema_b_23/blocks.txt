@@ -1,0 +1,2 @@
+01 header type=3 name='BASIC TEXT' len=4896 p1=38866 p2=0
+02 data flag=FF len=4896 OK -> asm source text (396 lines)

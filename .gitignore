@@ -1,0 +1,17 @@
+# Original tape recordings: ~290 MB, kept outside git
+*.wav
+
+# Generated
+README.html
+index.html
+__pycache__/
+
+# Third-party Baltik firmware downloaded from the zx-pk.ru forum: kept locally only
+baltik_rom_download/
+
+# Leftovers of the first decoding pass, superseded by files with proper names
+green_svema/side_1/svema_12/*_headerless.*
+green_svema/side_1/svema_22/*_headerless.*
+green_svema/side_1/svema_26/*_headerless.*
+green_svema/side_2/svema_b_02/*_headerless.*
+green_svema/side_2/svema_b_09/*_headerless.*

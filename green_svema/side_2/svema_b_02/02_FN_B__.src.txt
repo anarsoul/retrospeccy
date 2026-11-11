@@ -1,0 +1,6 @@
+   10 FN_B()
+   20 	LD	HL,65535
+   30 	SBC	HL,BC
+   40 	LD	B,H
+   50 	LD	C,L
+   60 	RET

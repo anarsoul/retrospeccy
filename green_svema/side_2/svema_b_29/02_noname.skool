@@ -1,0 +1,19 @@
+; Routine at D6D8
+c$D6D8 DI            ;
+ $D6D9 LD A,$03      ;
+ $D6DB OUT ($00),A   ;
+ $D6DD LD HL,$0000   ;
+ $D6E0 LD DE,$8000   ;
+ $D6E3 LD BC,$4000   ;
+ $D6E6 LDIR          ;
+ $D6E8 LD A,$FF      ;
+ $D6EA OUT ($00),A   ;
+ $D6EC LD HL,$8000   ;
+ $D6EF LD DE,$0000   ;
+ $D6F2 LD BC,$4000   ;
+ $D6F5 LDIR          ;
+ $D6F7 LD A,$FC      ;
+ $D6F9 OUT ($00),A   ;
+ $D6FB EI            ;
+ $D6FC JP $0000      ;
+

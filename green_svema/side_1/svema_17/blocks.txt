@@ -1,0 +1,6 @@
+01 header type=3 name='RADIOFILE8' len=11 p1=64375 p2=0
+02 data flag=FF len=11 OK -> disasm
+03 header type=3 name='RADIOFILE9' len=83 p1=64386 p2=0
+04 data flag=FF len=83 OK -> disasm
+05 header type=3 name='RADIOFILEA' len=319 p1=64469 p2=32782
+06 data flag=FF len=319 OK -> disasm

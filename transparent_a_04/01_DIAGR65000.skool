@@ -1,0 +1,19 @@
+; Routine at FDE8
+c$FDE8 LD HL,$0000   ;
+ $FDEB LD D,$00      ;
+ $FDED LD B,$00      ;
+ $FDEF LD C,$00      ;
+*$FDF1 LD E,$08      ;
+ $FDF3 LD A,(HL)     ;
+*$FDF4 BIT 0,A       ;
+ $FDF6 RRCA          ;
+ $FDF7 JR NZ,$FDFB   ;
+ $FDF9 JR $FDFC      ;
+*$FDFB INC BC        ;
+*$FDFC DEC E         ;
+ $FDFD JR NZ,$FDF4   ;
+ $FDFF INC HL        ;
+ $FE00 DEC D         ;
+ $FE01 JR NZ,$FDF1   ;
+ $FE03 RET           ;
+

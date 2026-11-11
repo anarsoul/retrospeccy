@@ -1,0 +1,66 @@
+   1 BORDER 0: PAPER 0: INK 7: BRIGHT 1: CLS
+   2 .POKE 62464,39296:.POKE 23606,37858
+   3 REM PEREXOD NA NAHALO
+   4 GO TO 100
+   5 REM PROCEDUR\
+   6 REM PROC. RISOVANIY OKNA
+   7 DEF FN O#(Y,X,L,H,S)
+   8 .SET=15: IF X=0 OR X=21 THEN GO TO 15
+   9 IF Y=0 OR Y=31 THEN GO TO 15
+  10 LET X=X-1: LET Y=Y-1: LET L=L+1: LET H=H+1
+  11 .SPN=21:.COL=X:.ROW=Y:.PTBL:.COL=X+H:.PTBL:.ROW=Y+L:.PTBL:.COL=X:.PTBL
+  12 LET H=H-1::.SPN=22: FOR Z=X+1 TO X+H:.COL=Z:.ROW=Y:.PTBL:.ROW=Y+L:.PTBL: NEXT Z
+  13 LET H=H+1: LET L=L-1:.SPN=23: FOR Z=Y+1 TO Y+L:.COL=X:.ROW=Z:.PTBL:.COL=X+H:.PTBL: NEXT Z
+  15 .SET=S:.RETN
+  16 DEF FN M#()
+  17 OVER 1: INK 8: PAPER 8: BRIGHT 8: RANDOMIZE USR 38882: OVER 0: INK 7: PAPER 0: BRIGHT 1
+  18 LET My= PEEK 39293: LET Mx= PEEK 39294: LET MF=( PEEK 39283)/16
+  20 .RETN
+  21 DEF FN P#(A$)
+  22 .SET=2
+  23 .NPX=1: FOR Z=1 TO 8:.SCRV: NEXT Z
+  24 PRINT AT 20,1;A$
+  25 .SET=0:.RETN
+  26 DEF FN P$#(A$)
+  27 .SET=1
+  28 .NPX=1: FOR Z=1 TO 8: BEEP .005,z:.SCRV: NEXT Z
+  29 PRINT AT 17,1;A$:.ATUV:.SET=0:.RETN
+ 100 REM FORMIROVANIE OKON
+ 101 REM OKNO GRAFIKI
+ 102 .PROC FN O#(1,1,17,20,0)
+ 103 .SET=1:.ROW=1:.COL=1:.HGT=17:.LEN=20
+ 105 REM OKNO TEKSTA
+ 106 .PROC FN O#(19,1,2,30,0)
+ 107 .SET=2:.ROW=19:.COL=1:.HGT=2:.LEN=30
+ 110 REM OKNO INVENTORY
+ 111 .PROC FN O#(1,22,6,9,0)
+ 112 .SET=3:.ROW=1:.COL=22:.HGT=6:.LEN=9
+ 115 REM OKNO PERSONAJE_
+ 116 .PROC FN O#(8,22,10,9,0)
+ 117 .SET=4:.ROW=8:.COL=22:.HGT=10:.LEN=9
+ 121 .SET=1: INK 7:.CLSV:.SET=0:.COL=7:.ROW=1:.SPN=35:.PTBL
+ 125 .COL=1:.ROW=4:.SPN=36:.PTBL
+ 130 .COL=1:.ROW=7:.SPN=37:.PTBL
+ 135 .COL=3:.ROW=10:.SPN=38:.PTBL
+ 140 .COL=3:.ROW=13:.SPN=25:.PTBL
+ 145 .PROC FN M#(): IF MF=2 THEN .PROC FN P#("Kliknite levo(c) knopko(c)."): GO TO 145
+ 146 LET k$= INKEY$
+ 150 IF k$="g" OR k$="G" OR MX <= 2 AND MX >= 1 THEN .PROC FN P#("Vozvrat k staro(c) igre"): GO TO 1000
+ 155 IF k$="N" OR k$="n" OR MX <= 5 AND MX >= 4 THEN .PROC FN P#("Nahat| novu& igru"): GO TO 2000
+ 160 IF k$="i" OR k$="I" OR MX <= 8 AND MX >= 7 THEN .PROC FN P#("Pokazat| instrukci&"): GO TO 3000
+ 165 IF k$="z" OR k$="Z" OR MX <= 11 AND MX >= 10 THEN .PROC FN P#("Zagruzit| staru& igru"): GO TO 4000
+ 170 IF k$="V" OR k$="v" OR MX <= 14 AND MX >= 13 THEN .PROC FN P#("V{gruzit| igru"): GO TO 5000
+ 171 IF k$= CHR$ 14 THEN STOP
+ 175 .PROC FN P#("V{ ne tuda klikaete."): GO TO 145
+1999 STOP
+2999 STOP
+3000 RESTORE 3010:.SET=1: INK 7:.SETV: FOR N=0 TO 24: READ A$:.PROC FN P$#(A$): NEXT N
+3001 .PROC FN P#("Najmite l&bu& klaviqu."): PAUSE 0: FOR n=7 TO 0: INK n:.SETV: NEXT n: GO TO 120
+3010 DATA "Bremenskie muz{kant{","","V @to(c) igre vam ","nado budet","spasti svoix ","druze(c) -","sobaku, kota ","i osla,","v{krast| princessu ","iz zamka","i otpravitsy ","v drugoe ","izmerenie, ","htob{ izbejat|","presledovaniy ","koroly.","","Igra napisana"
+3011 DATA "Xorujikom ","Vasiliem","v 2002 godu","","","","Udahi."
+3999 STOP
+4999 STOP
+5999 STOP
+9988 GO TO 120
+9989 STOP
+9990 CLEAR 38113: LOAD "" CODE : LOAD "" CODE : LOAD "" CODE 38114: GO TO 1

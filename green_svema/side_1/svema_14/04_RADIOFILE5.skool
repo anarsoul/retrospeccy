@@ -1,0 +1,15 @@
+; Routine at FB1F
+c$FB1F PUSH AF       ;
+ $FB20 PUSH BC       ;
+ $FB21 PUSH DE       ;
+ $FB22 LD A,($FA4E)  ;
+ $FB25 ADD A,$03     ;
+ $FB27 LD H,A        ;
+ $FB28 LD A,($FA4F)  ;
+ $FB2B ADD A,$08     ;
+ $FB2D LD L,A        ;
+ $FB2E POP DE        ;
+ $FB2F POP BC        ;
+ $FB30 POP AF        ;
+ $FB31 RET           ;
+

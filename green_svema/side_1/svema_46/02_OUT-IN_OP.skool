@@ -1,0 +1,18 @@
+; Routine at E6F1
+c$E6F1 DI            ;
+ $E6F2 CALL $FC46    ;
+ $E6F5 EI            ;
+ $E6F6 RET           ;
+ $E6F7 DI            ;
+ $E6F8 CALL $FB98    ;
+ $E6FB EI            ;
+ $E6FC RET           ;
+ $E6FD DI            ;
+ $E6FE CALL $FB49    ;
+ $E701 EI            ;
+ $E702 RET           ;
+ $E703 DI            ;
+ $E704 CALL $FAB6    ;
+ $E707 EI            ;
+ $E708 RET           ;
+

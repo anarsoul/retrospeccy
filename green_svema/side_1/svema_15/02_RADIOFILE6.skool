@@ -1,0 +1,26 @@
+; Routine at FB32
+c$FB32 PUSH BC       ;
+ $FB33 PUSH DE       ;
+ $FB34 PUSH HL       ;
+ $FB35 CALL $FB3C    ;
+ $FB38 POP HL        ;
+ $FB39 POP DE        ;
+ $FB3A POP BC        ;
+ $FB3B RET           ;
+*$FB3C LD HL,$37C2   ;
+ $FB3F LD A,($FA4E)  ;
+ $FB42 LD D,A        ;
+ $FB43 LD A,$00      ;
+*$FB45 CP D          ;
+ $FB46 JR Z,$FB4F    ;
+ $FB48 LD BC,$004E   ;
+ $FB4B ADD HL,BC     ;
+ $FB4C INC A         ;
+ $FB4D JR $FB45      ;
+*$FB4F LD B,$00      ;
+ $FB51 LD A,($FA4F)  ;
+ $FB54 LD C,A        ;
+ $FB55 ADD HL,BC     ;
+ $FB56 LD A,(HL)     ;
+ $FB57 RET           ;
+

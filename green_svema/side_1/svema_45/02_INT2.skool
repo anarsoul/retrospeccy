@@ -1,0 +1,24 @@
+; Routine at E6CD
+c$E6CD LD HL,$F500   ;
+ $E6D0 LD BC,$0100   ;
+*$E6D3 LD (HL),$00   ;
+ $E6D5 INC HL        ;
+ $E6D6 DEC BC        ;
+ $E6D7 LD A,B        ;
+ $E6D8 OR C          ;
+ $E6D9 JR NZ,$E6D3   ;
+ $E6DB DI            ;
+ $E6DC LD A,$F5      ;
+ $E6DE LD I,A        ;
+ $E6E0 IM 2          ;
+ $E6E2 LD A,$80      ;
+ $E6E4 OUT ($7E),A   ;
+ $E6E6 EI            ;
+ $E6E7 RET           ;
+ $E6E8 DI            ;
+ $E6E9 IM 1          ;
+ $E6EB LD A,$00      ;
+ $E6ED OUT ($7E),A   ;
+ $E6EF EI            ;
+ $E6F0 RET           ;
+

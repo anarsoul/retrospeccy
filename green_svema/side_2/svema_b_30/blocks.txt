@@ -1,0 +1,2 @@
+01 header type=0 name='HAINTMON  ' len=185 p1=1 p2=166
+02 data flag=FF len=185 OK -> BASIC

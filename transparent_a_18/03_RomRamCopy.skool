@@ -1,0 +1,18 @@
+; Routine at FA00
+c$FA00 DI            ;
+ $FA01 LD HL,$0000   ;
+ $FA04 LD BC,$4000   ;
+*$FA07 LD A,$00      ;
+ $FA09 OUT ($7E),A   ;
+ $FA0B LD D,(HL)     ;
+ $FA0C LD A,$80      ;
+ $FA0E OUT ($7E),A   ;
+ $FA10 LD (HL),D     ;
+ $FA11 INC HL        ;
+ $FA12 DEC BC        ;
+ $FA13 LD A,B        ;
+ $FA14 OR C          ;
+ $FA15 JR NZ,$FA07   ;
+ $FA17 EI            ;
+ $FA18 RET           ;
+

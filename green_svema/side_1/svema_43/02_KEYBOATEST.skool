@@ -1,0 +1,18 @@
+; Routine at E6A2
+c$E6A2 PUSH BC       ;
+ $E6A3 PUSH DE       ;
+ $E6A4 PUSH HL       ;
+ $E6A5 LD BC,$00FE   ;
+ $E6A8 IN A,(C)      ;
+ $E6AA AND $1F       ;
+ $E6AC CP $1F        ;
+ $E6AE JR Z,$E6B2    ;
+ $E6B0 JR NZ,$E6B6   ;
+*$E6B2 LD A,$00      ;
+ $E6B4 JR $E6B8      ;
+*$E6B6 LD A,$FF      ;
+*$E6B8 POP HL        ;
+ $E6B9 POP DE        ;
+ $E6BA POP BC        ;
+ $E6BB RET           ;
+

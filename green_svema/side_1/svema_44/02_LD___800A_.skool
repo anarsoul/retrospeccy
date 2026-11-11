@@ -1,0 +1,15 @@
+; Routine at E6BC
+c$E6BC PUSH AF       ;
+ $E6BD RLCA          ;
+ $E6BE RLCA          ;
+ $E6BF RLCA          ;
+ $E6C0 OUT ($FE),A   ;
+ $E6C2 POP AF        ;
+ $E6C3 RET           ;
+ $E6C4 IN A,($FE)    ;
+ $E6C6 RLCA          ;
+ $E6C7 RLCA          ;
+ $E6C8 OUT ($FE),A   ;
+ $E6CA AND $10       ;
+ $E6CC RET           ;
+

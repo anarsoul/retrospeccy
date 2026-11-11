@@ -1,0 +1,2 @@
+01 header type=3 name='Paint M.-2' len=6912 p1=24320 p2=0
+02 data flag=FF len=6912 OK -> screen

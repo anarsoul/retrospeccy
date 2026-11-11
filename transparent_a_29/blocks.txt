@@ -1,0 +1,2 @@
+01 header type=3 name='PC-OUT    ' len=280 p1=38866 p2=943 | data flag=FF got=280 OK -> asm source text (23 lines)
+03 header type=3 name='PCOUT.EXE ' len=39 p1=23296 p2=0 | data flag=FF got=39 OK -> disasm
