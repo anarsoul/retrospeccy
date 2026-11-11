@@ -1,4 +1,4 @@
-all: rk86.tap piton.tap basic.tap
+all: rk86.tap piton.tap basic.tap rdisk1.tap rdisk2.tap
 
 rk86.tap: rk86.asm ../green_svema/side_1/svema_27/12_Radio_Font.bin
 	sjasmplus --nologo --msg=war rk86.asm
@@ -25,5 +25,9 @@ BASIC_PATCH = 12D0=C3EE19 19EE=9F2803CB2FC93CC9 096E=C3F619 19F6=8FB7E81E18C3D80
 
 basic.tap: BASIC80.RKR rkr2tap.py Makefile
 	./rkr2tap.py BASIC80.RKR basic.tap $(BASIC_PATCH)
+
+# RAMDOS V2.01 with its RAM disk, as memory images: no patches needed.
+rdisk%.tap: RDISK%.PKI rkr2tap.py
+	./rkr2tap.py $< $@
 
 .PHONY: all
