@@ -892,9 +892,10 @@ sjasmplus: тот же набор директив, та же таблица #F8
 эмулятор, `piton.tap` — «Питон» с записи 26 (оригинал для РК) и `basic.tap` — BASIC для
 РК-86; вторую и третью читает директива `I`.
 
-![Монитор](rk86_plus3/1_monitor.png)
-![«Питон» в эмуляторе](rk86_plus3/2_piton.png)
-![BASIC в эмуляторе](rk86_plus3/3_basic.png)
+![Загрузка «Питона» директивой I и запуск](rk86_plus3/1_monitor.png)
+![«Питон»](rk86_plus3/2_piton.png)
+![BASIC: LIST и RUN](rk86_plus3/3_basic.png)
+![Директивы F, S, M и режим РУС](rk86_plus3/4_directives.png)
 
 Что перенесено на другую машину:
 
