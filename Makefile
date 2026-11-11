@@ -2,7 +2,7 @@
 # cmark-gfm (no pandoc needed).
 # readme_ids.py gives the headings ids so that links to sections work.
 CMARK ?= cmark-gfm
-TITLE := Архив кассет ZX Spectrum: Балтик
+TITLE := РетроСПЕКтива — разбор двух кассет для ZX Spectrum: Балтик
 
 define HEAD
 <!doctype html>
