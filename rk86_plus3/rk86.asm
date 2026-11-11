@@ -17,27 +17,30 @@
 ;
 ; Что сделано иначе - см. README, раздел про эту сборку. Коротко:
 ;   - теневое ОЗУ "Балтика" (порт #7E) заменено режимом "всё ОЗУ" +2A/+3
-;     (порт #1FFD, страницы 4-5-6-7) с теневым экраном: экран Спектрума
-;     уехал в #C000, и РК достались его родные 32К с видеопамятью в #76D0
+;     (порт #1FFD), и РК достались его родные 32К с видеопамятью в #76D0
 ;     (в оригинале было 16К и видеопамять в #36D0);
 ;   - IM 2 с таблицей из 257 одинаковых байт и своим стеком в обработчике;
 ;   - на экран рисует только прерывание: сравнивает видеопамять РК с теневой
 ;     копией и перерисовывает изменившиеся пары знаков. Печать Монитора
 ;     просто пишет в видеопамять.
 ;
-; Карта памяти после запуска:
-;   #0000-#75FF  ОЗУ программы РК (страницы 4 и 5)
+; У +2A/+3 страницы 4-7 "медленные": пока луч рисует картинку, видеоконтроллер
+; придерживает процессор на каждом обращении к ним. Поэтому всё, что
+; исполняется, лежит в страницах 0-3 (раскладка "всё ОЗУ" номер 0):
+;   #0000-#75FF  ОЗУ программы РК (страницы 0 и 1)
 ;   #76CF        вершина стека, как у РК
 ;   #76D0-#7FF3  видеопамять РК, 30 строк по 78; видимое окно с #77C2
-;   #8100-#9C4A  код сравнения с теневой копией (генерируется при запуске)
+;   #8100-#9C4A  код сравнения с теневой копией (страница 2, генерируется)
 ;   #9D00-#9E00  таблица векторов IM 2
-;   #B000-#BFFF  два сдвинутых шрифта по линиям (генерируются при запуске)
-;   #C000-#DAFF  экран Спектрума (страница 7, теневой экран)
-;   #E290-#F86E  эта программа (тоже страница 7)
+;   #D000-#DFFF  два сдвинутых шрифта по линиям (страница 3, генерируются)
+;   #E290-#F86E  эта программа
+; Экрана Спектрума в этой раскладке нет: он бывает только в страницах 5 и 7.
+; Прерывание на время записи в экран включает раскладку 4-5-6-3 - страница 3
+; с кодом остаётся на месте, экран появляется в #4000 - и сразу возвращает
+; прежнюю.
 ; Адреса портов РК ничем не заняты: #8000-#8003 и #A000-#A003 (ВВ55),
-; #E000-#E008 (ВТ57). Запись туда ничего не портит и ничего не делает.
-; ВГ75 (#C000-#C001) приходится на два первых байта экрана; их прерывание
-; каждый кадр рисует заново.
+; #C000-#C001 (ВГ75), #E000-#E008 (ВТ57). Запись туда ничего не портит и
+; ничего не делает.
 
         DEVICE ZXSPECTRUM48
 
@@ -51,9 +54,11 @@ RKSP    EQU #76CF
 SCAN    EQU #8100               ; сгенерированный код сравнения
 IMTAB   EQU #9D00
 IMBYTE  EQU #F7                 ; вектор #F7F7
-FONTL   EQU #B000               ; 8 линий по 256 байт: знак в старшем полубайте
-FONTR   EQU #B800               ; то же в младшем
-SCREEN  EQU #C000               ; экран Спектрума: страница 7
+FONTL   EQU #D000               ; 8 линий по 256 байт: знак в старшем полубайте
+FONTR   EQU #D800               ; то же в младшем
+SCREEN  EQU #4000               ; экран Спектрума: страница 5, когда она подключена
+MAP_RUN    EQU 1                ; порт #1FFD: страницы 0-1-2-3
+MAP_SCREEN EQU 5                ; страницы 4-5-6-3
 BORDER  EQU 1
 ATTR    EQU #0F                 ; белый по синему, как в загрузчике с ленты
 LINELEN EQU 32
@@ -65,22 +70,26 @@ ENTRY   EQU #E290               ; 58000, как в оригинале
 ; Загрузчик: работает в обычной раскладке (ПЗУ, 5, 2, страница из #7FFD).
         ORG LOADER
 loader: di
+        ld a,#10                ; страницы 0 и 1 - будущая память РК: чистим
+        call .clear
+        ld a,#11
+        call .clear
+        ld a,#13                ; страница 3: эмулятор
         ld bc,#7FFD
-        ld a,#14                ; страница 4 в #C000: будущие #0000-#3FFF РК
+        out (c),a
+        ld hl,image
+        ld de,ENTRY
+        ld bc,image_end - ENTRY
+        ldir
+        jp start
+.clear: ld bc,#7FFD
         out (c),a
         ld hl,#C000
         ld de,#C001
         ld bc,#3FFF
         ld (hl),l
         ldir
-        ld bc,#7FFD
-        ld a,#17                ; страница 7: экран и эмулятор
-        out (c),a
-        ld hl,image
-        ld de,ENTRY
-        ld bc,image_end - ENTRY
-        ldir
-        jp cold
+        ret
 
 image:
         DISP ENTRY
@@ -90,24 +99,12 @@ image:
 ; возвращает сюда из любой программы.
 start:  di
         ld bc,#7FFD
-        ld a,#1F                ; показывать теневой экран (страницу 7)
+        ld a,#13                ; показывать обычный экран (страницу 5)
         out (c),a
         ld bc,#1FFD
-        ld a,3                  ; "всё ОЗУ": страницы 4, 5, 6, 7; мотор выключен
+        ld a,MAP_SCREEN         ; экран в #4000; мотор выключен
         out (c),a               ; было: LD A,#FC : OUT (#7E),A
-        ld sp,RKSP
-
-        ld hl,IMTAB             ; 257 байт: какой бы байт ни оказался на шине,
-        ld (hl),IMBYTE          ; вектор читается как #F7F7
-        ld de,IMTAB + 1
-        ld bc,256
-        ldir
-        ld a,high IMTAB
-        ld i,a
-        im 2
-
-        call fontinit
-        call scaninit
+        ld sp,isr_stack
 
         ld hl,SCREEN            ; экран: точки и цвет
         ld de,SCREEN + 1
@@ -121,6 +118,23 @@ start:  di
         ldir
         ld a,BORDER
         out (#FE),a
+
+        ld bc,#1FFD
+        ld a,MAP_RUN            ; дальше - только быстрая память
+        out (c),a
+        ld sp,RKSP
+
+        ld hl,IMTAB             ; 257 байт: какой бы байт ни оказался на шине,
+        ld (hl),IMBYTE          ; вектор читается как #F7F7
+        ld de,IMTAB + 1
+        ld bc,256
+        ldir
+        ld a,high IMTAB
+        ld i,a
+        im 2
+
+        call fontinit
+        call scaninit
 
         xor a
         ld (escst),a
@@ -257,15 +271,6 @@ cmd_l:  ld de,linebuf + 1
         cp high (VTOP - #D0)
         jr nz,.next
         ret
-
-; Сюда приходит загрузчик: в #4000-#7FFF остались старый экран, BASIC и
-; сам загрузчик - теперь это память РК, чистим.
-cold:   ld hl,#4000
-        ld de,#4001
-        ld bc,#3FFF
-        ld (hl),l
-        ldir
-        jp start
 
 ; Если HL = DE - выход из вызвавшей процедуры, иначе HL + 1.
 nexthl: ld a,h
@@ -460,318 +465,7 @@ gettop: ld hl,(ramtop)
 settop: ld (ramtop),hl
         ret
 
-; ---------------------------------------------------------------------------
-; #F809: вывод знака C. Знак только записывается в видеопамять РК, на экран
-; его перенесёт прерывание. Управляющие коды и ESC Y - как в Мониторе РК,
-; только строк 24. Все регистры сохраняются; прерывания на выходе разрешены
-; (программы РК щёлкают динамиком через DI/EI, а здесь без прерываний нет
-; экрана).
-putc:   push af
-        push bc
-        push de
-        push hl
-        call .do
-        pop hl
-        pop de
-        pop bc
-        pop af
-        ei
-        ret
-
-.do:    ld hl,(curaddr)
-        ld de,(curpos)          ; D = строка, E = столбец
-        ld a,(escst)
-        or a
-        jp nz,.esc
-        ld a,c
-        and #7F
-        ld c,a
-        cp ' '
-        jr nc,.print
-        cp #1F
-        jr z,.cls
-        cp #0C
-        jr z,.home
-        cp #0D
-        jr z,.cr
-        cp #0A
-        jr z,.lf
-        cp #08
-        jr z,.left
-        cp #18
-        jr z,.right
-        cp #19
-        jr z,.up
-        cp #1A
-        jr z,.down
-        cp #1B
-        jp z,.esc0
-        cp #07
-        jp z,bell
-.print: ld (hl),c
-        call right
-        ld a,d                  ; перешли в начало экрана - значит, это была
-        or e                    ; последняя позиция: назад и перевод строки
-        jr nz,.store
-        call up
-.lf:    ld a,d
-        cp ROWS - 1
-        jr nz,.down
-        push hl
-        push de
-        ld hl,VIDEO + PITCH     ; прокрутка: только видеопамять
-        ld de,VIDEO
-        ld bc,PITCH * (ROWS - 1)
-        ldir
-        ld hl,VIDEO + PITCH * (ROWS - 1)
-        ld b,COLS
-.clr:   ld (hl),0
-        inc hl
-        djnz .clr
-        pop de
-        pop hl
-        jr .store
-.down:  call down
-        jr .store
-.up:    call up
-        jr .store
-.left:  call left
-        jr .store
-.right: call right
-        jr .store
-.cr:    ld a,l
-        sub e
-        ld l,a
-        jr nc,.cr1
-        dec h
-.cr1:   ld e,0
-        jr .store
-.cls:   ld hl,VTOP              ; РК чистит видеопамять нулями
-        ld de,VTOP + 1
-        ld bc,VLEN - 1
-        ld (hl),0
-        ldir
-.home:  ld hl,VIDEO
-        ld de,0
-.store: di                      ; прерывание читает обе ячейки для курсора
-        ld (curaddr),hl
-        ld (curpos),de
-        ret
-.esc0:  ld a,1
-.setst: ld (escst),a
-        jr .store
-
-; ESC Y <строка + #20> <столбец + #20>. Монитор РК ставит курсор в начало и
-; шагает вниз и вправо нужное число раз, поэтому слишком большие числа
-; заворачиваются, а больше #80 - не шагают совсем. Здесь так же.
-.esc:   dec a
-        jr z,.esc1
-        dec a
-        jr z,.esc2
-        xor a
-        ld (escst),a
-        ld a,c
-        sub ' '
-        ld c,a
-.col:   dec c
-        jp m,.store
-        push bc
-        call right
-        pop bc
-        jr .col
-.esc2:  ld a,c
-        sub ' '
-        ld c,a
-.row:   dec c
-        ld a,3
-        jp m,.setst
-        push bc
-        call down
-        pop bc
-        jr .row
-.esc1:  ld a,c
-        cp 'Y'
-        ld a,0
-        jr nz,.setst
-        ld hl,VIDEO
-        ld de,0
-        ld a,2
-        jr .setst
-
-; Шаги курсора: HL - адрес в видеопамяти, D - строка, E - столбец.
-right:  inc hl
-        inc e
-        ld a,e
-        cp COLS
-        ret nz
-        ld e,0
-        ld bc,-COLS
-        add hl,bc
-down:   inc d
-        ld bc,PITCH
-        ld a,d
-        cp ROWS
-        jr nz,.add
-        ld d,0
-        ld bc,-PITCH * (ROWS - 1)
-.add:   add hl,bc
-        ret
-left:   dec hl
-        dec e
-        ret p
-        ld e,COLS - 1
-        ld bc,COLS
-        add hl,bc
-up:     dec d
-        ld bc,-PITCH
-        jp p,.add
-        ld d,ROWS - 1
-        ld bc,PITCH * (ROWS - 1)
-.add:   add hl,bc
-        ret
-
-; Звонок (код 7): около 2,8 кГц, 36 мс. Прерывания запрещены, иначе
-; перерисовка рубит тон с частотой кадров.
-bell:   di
-        ld b,200
-        ld a,BORDER
-.half:  xor #10
-        out (#FE),a
-        ld c,38
-.wait:  dec c
-        jr nz,.wait
-        djnz .half
-        ret
-
-; ---------------------------------------------------------------------------
-; Клавиатура.
-;
-; #F81B: код нажатой клавиши без ожидания, #FF - ничего не нажато, #FE -
-; РУС/ЛАТ (CAPS+SYM).
-kstat:  push bc
-        push de
-        push hl
-        call kscan
-        pop hl
-        pop de
-        pop bc
-        ei
-        ret
-
-; Ввод устроен как в Мониторе РК: нажатие - это событие. Прерывание раз в
-; кадр опрашивает матрицу; новая клавиша (или автоповтор удержанной) взводит
-; kready, #F803 его сбрасывает, отпускание - тоже. Поэтому <ВК>, которым
-; закончили строку, не считается нажатой клавишей в следующем опросе #F812 -
-; иначе, например, LIST Бейсика принимал бы его за паузу.
-;
-; #F812: A = #FF, если есть непрочитанное нажатие, иначе 0.
-kpressed:
-        ei
-        ld a,(kready)
-        or a
-        ret z
-        ld a,#FF
-        ret
-
-; #F803: ожидание клавиши, с автоповтором и щелчком.
-getkey: ei
-.wait:  ld a,(kready)
-        or a
-        jr nz,.got
-        halt
-        jr .wait
-.got:   xor a
-        ld (kready),a
-        push bc
-        ld a,BORDER + #10       ; щелчок
-        out (#FE),a
-        ld b,40
-.click: djnz .click
-        ld a,BORDER
-        out (#FE),a
-        pop bc
-        ld a,(kcode)
-        ret
-
-; Опрос матрицы. A = код, #FF или #FE. Портит BC, DE, HL.
-; Номер клавиши - полуряд * 5 + бит; CAPS (0) и SYM (36) - регистры.
-kscan:  ld a,#FE
-        in a,(#FE)
-        cpl
-        and 1
-        ld d,a
-        ld a,#7F
-        in a,(#FE)
-        cpl
-        and 2
-        or d
-        ld d,a                  ; бит 0 - CAPS, бит 1 - SYM
-        ld bc,#FEFE
-        ld e,0
-.row:   in a,(c)
-        cpl
-        and #1F
-        ld h,5
-.bit:   rra
-        jr nc,.nobit
-        ld l,a
-        ld a,e
-        or a
-        jr z,.shift
-        cp 36
-        jr nz,.found
-.shift: ld a,l
-.nobit: inc e
-        dec h
-        jr nz,.bit
-        rlc b
-        jr c,.row
-        ld hl,extdown           ; ничего, кроме регистров
-        ld a,d
-        cp 3
-        jr z,.ext
-        ld (hl),0
-        ld a,#FF
-        ret
-.ext:   ld a,(hl)               ; CAPS+SYM: РУС/ЛАТ, один раз на нажатие
-        ld (hl),1
-        or a
-        jr nz,.fe
-        ld a,(rus)
-        xor #20
-        ld (rus),a
-.fe:    ld a,#FE
-        ret
-.found: ld hl,keys
-        ld a,d
-        or a
-        jr z,.table
-        ld hl,keys + 40
-        dec a
-        jr z,.table
-        ld hl,keys + 80
-.table: ld d,0
-        add hl,de
-        ld a,(hl)
-        cp #40                  ; РУС: коды #40-#5E уходят в #60-#7E
-        ret c
-        cp #5F
-        ret nc
-        ld hl,rus
-        add a,(hl)
-        ret
-
-keys:   ; без регистра
-        DB #FF,"ZXCV", "ASDFG", "QWERT", "12345", "09876", "POIUY"
-        DB #0D,"LKJH", " ",#FF,"MNB"
-        ; CAPS: буква - управляющий код (УС), цифры - клавиши РК:
-        ; 1 АР2, 2 ТАБ, 3 домой, 4 СТР, 5 6 7 8 стрелки, 9 ПС, 0 ЗБ
-        DB #FF,#1A,#18,#03,#16, #01,#13,#04,#06,#07, #11,#17,#05,#12,#14
-        DB #1B,#09,#0C,#1F,#08, #7F,#0A,#18,#19,#1A, #10,#0F,#09,#15,#19
-        DB #0D,#0C,#0B,#0A,#08, #03,#FF,#0D,#0E,#02
-        ; SYM: знаки, как на клавишах Спектрума; D - "\", Y U - "[" "]", H - "^"
-        DB #FF,":",#FF,"?/", #FF,#FF,#5C,#FF,#FF, #FF,#FF,#FF,"<>"
-        DB "!@#$%", "_)('&", #22,";",#FF,"][", #0D,"=+-^", " ",#FF,".,*"
+        INCLUDE "console.inc"
 
 ; ---------------------------------------------------------------------------
 ; Лента. Формат спектрумовский: заголовок типа 3 с именем "RADIO FILE" и блок
@@ -1061,298 +755,7 @@ ldedge1:
         scf
         ret
 
-; ---------------------------------------------------------------------------
-; Два сдвинутых шрифта, разложенные по линиям: линия n знака c лежит в
-; FONTL + n*256 + c (в старшем полубайте) и в FONTR + n*256 + c (в младшем).
-; Коды #80-#FF (у РК это управляющие коды ВГ75) - пустые.
-fontinit:
-        ld hl,FONTL
-        ld de,FONTL + 1
-        ld bc,#0FFF
-        ld (hl),l
-        ldir
-        ld ix,font
-        ld e,0
-.char:  ld d,high FONTL
-        ld b,8
-.line:  ld a,(ix+0)
-        inc ix
-        and #F0
-        ld (de),a
-        rrca
-        rrca
-        rrca
-        rrca
-        set 3,d                 ; FONTR = FONTL + #800
-        ld (de),a
-        res 3,d
-        inc d
-        djnz .line
-        inc e
-        jp p,.char
-        ret
-
-; Код сравнения видеопамяти с теневой копией. На каждую пару знаков:
-;       POP HL                  ; пара из видеопамяти РК (SP идёт по строке)
-;       LD DE,тень              ; что сейчас нарисовано
-;       SBC HL,DE
-;       CALL NZ,fixrows + 6*строка
-; 45 тактов на пару, 34 560 на экран. Теневая копия - это операнды LD DE.
-; В начале каждой строки LD SP,адрес строки; в конце JP scandone.
-scaninit:
-        ld hl,SCAN
-        ld de,VIDEO
-        ld bc,fixrows
-        ld a,ROWS
-.row:   ex af,af'
-        ld (hl),#31             ; LD SP,nn
-        inc hl
-        ld (hl),e
-        inc hl
-        ld (hl),d
-        inc hl
-        ld a,COLS / 2
-.pair:  ld (hl),#E1             ; POP HL
-        inc hl
-        ld (hl),#11             ; LD DE,0: экран пуст
-        inc hl
-        ld (hl),0
-        inc hl
-        ld (hl),0
-        inc hl
-        ld (hl),#ED             ; SBC HL,DE
-        inc hl
-        ld (hl),#52
-        inc hl
-        ld (hl),#C4             ; CALL NZ,nn
-        inc hl
-        ld (hl),c
-        inc hl
-        ld (hl),b
-        inc hl
-        dec a
-        jr nz,.pair
-        push hl
-        ld hl,PITCH
-        add hl,de
-        ex de,hl
-        ld hl,6
-        add hl,bc
-        ld b,h
-        ld c,l
-        pop hl
-        ex af,af'
-        dec a
-        jr nz,.row
-        ld (hl),#C3             ; JP scandone
-        inc hl
-        ld (hl),low scandone
-        inc hl
-        ld (hl),high scandone
-        ret
-        ASSERT SCAN + ROWS * (3 + 9 * COLS / 2) + 3 <= IMTAB
-
-; ---------------------------------------------------------------------------
-; Кадровое прерывание.
-isr:    push af
-        ld (isr_usp),sp
-        ld sp,isr_stack
-        push bc
-        push de
-        push hl
-        push ix
-
-        ld a,#FE                ; CAPS+ENTER - выход в Монитор
-        in a,(#FE)
-        rra
-        jr c,.nocaps
-        ld a,#BF
-        in a,(#FE)
-        rra
-        jp nc,start
-.nocaps:
-        ld a,#7F                ; SYM+A - перерисовка выключена, SYM+B - включена
-        in a,(#FE)
-        bit 1,a
-        jr nz,.nosym
-        bit 4,a
-        jr nz,.notb
-        xor a
-        ld (scanoff),a
-.notb:  ld a,#FD
-        in a,(#FE)
-        rra
-        jr c,.nosym
-        ld a,1
-        ld (scanoff),a
-.nosym: call kscan              ; события клавиатуры для #F803 и #F812
-        ld hl,lastkey
-        cp (hl)
-        jr z,.ksame
-        ld (hl),a               ; другая клавиша или отпускание
-        xor a
-        ld (kready),a
-        ld a,25                 ; полсекунды до автоповтора
-        jr .knew
-.ksame: ld hl,repcnt
-        dec (hl)
-        jr nz,.kdone
-        ld a,3
-.knew:  ld (repcnt),a
-        ld a,(lastkey)
-        cp #FE
-        jr nc,.kdone
-        ld (kcode),a
-        ld a,1
-        ld (kready),a
-.kdone:
-        ld hl,SCREEN + #1800    ; РУС - мигает первое знакоместо
-        res 7,(hl)
-        ld a,(rus)
-        or a
-        jr z,.lat
-        set 7,(hl)
-.lat:
-        ld a,(scanoff)
-        or a
-        jr nz,scanskip
-        ld (isr_sp),sp
-        jp SCAN                 ; CF = 0 после OR A
-
-scandone:
-        ld sp,(isr_sp)
-        ld de,(VIDEO)           ; #C000 и #C001 - это ещё и регистры ВГ75 РК:
-        ld h,high FONTL         ; программа могла туда писать, а сравнение
-        ld l,e                  ; этого не видит. Верхняя линия первых четырёх
-        ld a,(hl)               ; знаков рисуется каждый кадр.
-        ld h,high FONTR
-        ld l,d
-        or (hl)
-        ld (SCREEN),a
-        ld de,(VIDEO + 2)
-        ld h,high FONTL
-        ld l,e
-        ld a,(hl)
-        ld h,high FONTR
-        ld l,d
-        or (hl)
-        ld (SCREEN + 1),a
-scanskip:
-; Курсор - подчёркивание, 16 кадров горит, 16 нет. На время сравнения он с
-; экрана не снимается: сравнение идёт, пока луч рисует верхнюю половину
-; экрана, и курсор, стёртый в начале прерывания, в верхних строках не был бы
-; виден вовсе. Вместо этого после сравнения нижняя линия пары на старом месте
-; рисуется заново из видеопамяти, и сразу ставится курсор на новом.
-        ld hl,(cur_scr)
-        ld a,h
-        or a
-        jr z,.noold
-        ex de,hl
-        ld hl,(cur_vid)
-        call curline
-        ld (de),a
-        xor a
-        ld (cur_scr + 1),a
-.noold: ld hl,frames
-        inc (hl)
-        bit 4,(hl)
-        jr z,.exit
-        ld hl,(curaddr)
-        ld de,(curpos)
-        ld c,#F0
-        bit 0,e
-        jr z,.left
-        ld c,#0F
-        dec hl                  ; HL - начало пары в видеопамяти
-.left:  ld (cur_vid),hl
-        call curline
-        xor c
-        ld c,a
-        ld a,d
-        and #18
-        or (high SCREEN) + 7
-        ld h,a
-        ld a,d
-        rrca
-        rrca
-        rrca
-        and #E0
-        ld l,a
-        ld a,e
-        srl a
-        or l
-        ld l,a
-        ld (hl),c
-        ld (cur_scr),hl
-.exit:  pop ix
-        pop hl
-        pop de
-        pop bc
-        ld sp,(isr_usp)
-        pop af
-        ei
-        ret
-
-; Нижняя линия пары знаков по адресу HL в видеопамяти. Портит HL.
-curline:
-        push de
-        ld e,(hl)
-        inc hl
-        ld d,(hl)
-        ld h,(high FONTL) + 7
-        ld l,e
-        ld a,(hl)
-        ld h,(high FONTR) + 7
-        ld l,d
-        or (hl)
-        pop de
-        ret
-
-; Пара знаков изменилась. Сюда приходят через CALL NZ из кода сравнения:
-; HL = пара - тень, DE = тень, BC = константа строки, а адрес возврата CALL
-; записал в видеопамять РК поверх самой пары (SP - указатель по видеопамяти).
-; Пара возвращается на место, тень в коде обновляется, знаки рисуются.
-; Адрес экрана = #8000 + (SP + BC) / 2, где BC = 2 * (адрес строки экрана -
-; #8000) - адрес строки видеопамяти - 2. Около 460 тактов на пару.
-fix:    add hl,de               ; HL = новая пара: L - левый знак, H - правый
-        pop ix                  ; адрес возврата
-        push hl                 ; пару - обратно в видеопамять
-        pop af
-        ld (ix-7),l             ; новая тень
-        ld (ix-6),h
-        ex de,hl
-        ld hl,0
-        add hl,sp
-        add hl,bc
-        scf
-        rr h
-        rr l
-        ld b,h
-        ld c,l                  ; BC - байт экрана
-        ld h,high FONTL
-        ld l,e                  ; HL - левый знак в своём шрифте
-        ld e,d
-        ld d,high FONTR         ; DE - правый в своём
-        DUP 7
-        ld a,(de)
-        or (hl)
-        ld (bc),a
-        inc d
-        inc h
-        inc b
-        EDUP
-        ld a,(de)
-        or (hl)                 ; заодно CF = 0 для следующего SBC
-        ld (bc),a
-        jp (ix)
-
-fixrows:
-row = 0
-        DUP ROWS
-        ld bc,(2 * (SCREEN - #8000 + ((row & #18) << 8) + ((row & 7) << 5)) - (VIDEO + PITCH * row) - 2) & #FFFF
-        jp fix
-row = row + 1
-        EDUP
+        INCLUDE "render.inc"
 
 ; ---------------------------------------------------------------------------
 t_banner:
@@ -1384,7 +787,11 @@ linebuf: DS LINELEN
         DS 48
 isr_stack:
 
-font:   INCBIN "../green_svema/side_1/svema_27/12_Radio_Font.bin"
+; Шрифт с кассеты, кроме последнего знака. Код #7F у РК - закрашенное
+; знакоместо (им "Питон" рисует еду, а RAMDOS - рамку); в шрифте с кассеты на
+; его месте фигура вроде уголка.
+font:   INCBIN "../green_svema/side_1/svema_27/12_Radio_Font.bin", 0, #7F * 8
+        DS 8, #F0
         ASSERT $ - font == #400
 
         ASSERT $ <= IMBYTE * 257

@@ -1,6 +1,6 @@
 all: rk86.tap piton.tap basic.tap rdisk1.tap rdisk2.tap dumpcor.tap
 
-rk86.tap: rk86.asm ../green_svema/side_1/svema_27/12_Radio_Font.bin
+rk86.tap: rk86.asm console.inc render.inc ../green_svema/side_1/svema_27/12_Radio_Font.bin
 	sjasmplus --nologo --msg=war rk86.asm
 
 piton.tap: piton.asm ../green_svema/side_1/svema_26/02_RADIO_FILE.bin
@@ -34,4 +34,8 @@ rdisk%.tap: RDISK%.PKI rkr2tap.py
 dumpcor.tap: DUMPCOR1.RK rkr2tap.py
 	./rkr2tap.py DUMPCOR1.RK dumpcor.tap
 
-.PHONY: all
+# Needs SkoolKit (pip install skoolkit).
+test: rk86.tap piton.tap
+	./test.py
+
+.PHONY: all test

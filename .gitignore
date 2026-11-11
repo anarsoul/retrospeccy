@@ -6,6 +6,7 @@ README.html
 index.html
 rk86_plus3/index.html
 sampler/index.html
+rk86mon_plus3/index.html
 __pycache__/
 
 # Third-party Baltik firmware downloaded from the zx-pk.ru forum: kept locally only
@@ -23,3 +24,6 @@ tnr_48k/48-tnr.rom
 
 # Build listing of the RK-86 emulator
 rk86_plus3/rk86.lst
+
+# The 32K Monitor, made by rk86mon_plus3/mkmon.py from the copy on the tape
+rk86mon_plus3/mon32.bin
