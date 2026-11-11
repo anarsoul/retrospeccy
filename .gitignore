@@ -15,3 +15,6 @@ green_svema/side_1/svema_22/*_headerless.*
 green_svema/side_1/svema_26/*_headerless.*
 green_svema/side_2/svema_b_02/*_headerless.*
 green_svema/side_2/svema_b_09/*_headerless.*
+
+# ROM image patched with the Russian font (built locally from your own ROM)
+tnr_48k/48-tnr.rom
