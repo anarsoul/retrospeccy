@@ -10,11 +10,11 @@
 
 | Лента | Что на ней |
 |---|---|
-| `rk86.tap` | эмулятор: загрузчик на BASIC и блок кода |
-| `piton.tap` | игра «Питон» для РК-86 — запись 26 той же кассеты |
-| `basic.tap` | BASIC для РК-86 — `BASIC80.RKR` с [rk86.ru](https://rk86.ru/files/BASIC80.RKR) |
-| `rdisk1.tap`, `rdisk2.tap` | RAMDOS V2.01 вместе с диском в памяти — `RDISK1.PKI` и `RDISK2.PKI` [оттуда же](https://rk86.ru/files/RDISK1.PKI) |
-| `dumpcor.tap` | экранный редактор памяти, 512 байт — `DUMPCOR1.RK` [оттуда же](https://rk86.ru/files/DUMPCOR1.RK) |
+| [`rk86.tap`](rk86.tap) | эмулятор: загрузчик на BASIC и блок кода |
+| [`piton.tap`](piton.tap) | игра «Питон» для РК-86 — запись 26 той же кассеты |
+| [`basic.tap`](basic.tap) | BASIC для РК-86 — `BASIC80.RKR` с [rk86.ru](https://rk86.ru/files/BASIC80.RKR) |
+| [`rdisk1.tap`](rdisk1.tap), [`rdisk2.tap`](rdisk2.tap) | RAMDOS V2.01 вместе с диском в памяти — `RDISK1.PKI` и `RDISK2.PKI` [оттуда же](https://rk86.ru/files/RDISK1.PKI) |
+| [`dumpcor.tap`](dumpcor.tap) | экранный редактор памяти, 512 байт — `DUMPCOR1.RK` [оттуда же](https://rk86.ru/files/DUMPCOR1.RK) |
 
 Все ленты, кроме первой, читает уже Монитор эмулятора, директивой `I`.
 
