@@ -22,6 +22,8 @@ table { display: block; max-width: 100%; overflow-x: auto; }
 h2 { border-bottom: 1px solid #ccc; padding-bottom: .2em; margin-top: 2em; }
 @media (prefers-color-scheme: dark) {
   body { color: #ddd; background: #1b1b1b; }
+  a { color: #8ab4f8; }
+  a:visited { color: #c58af9; }
   th { background: #333; }
   th, td { border-color: #555; }
   code { background: #2c2c2c; }
