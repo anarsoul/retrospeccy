@@ -35,18 +35,28 @@ h2 { border-bottom: 1px solid #ccc; padding-bottom: .2em; margin-top: 2em; }
 endef
 export HEAD
 
-all: README.html index.html
+all: README.html index.html rk86_plus3/index.html
 
 # GitHub Pages serves index.html; it is the same page.
 index.html: README.html
 	cp $< $@
 
-%.html: %.md Makefile readme_ids.py
+define RENDER
 	{ printf '%s\n' "$$HEAD"; \
 	  $(CMARK) --extension table --extension autolink $< | ./readme_ids.py; \
 	  printf '</body>\n</html>\n'; } > $@
+endef
+
+%.html: %.md Makefile readme_ids.py
+	$(RENDER)
+
+# The emulator's own README as a page of the site: links to rk86_plus3/ open
+# it rendered both on GitHub (the directory view) and on GitHub Pages.
+rk86_plus3/index.html: TITLE := Эмулятор «Радио-86РК» для ZX Spectrum +2A/+3
+rk86_plus3/index.html: rk86_plus3/README.md Makefile readme_ids.py
+	$(RENDER)
 
 clean:
-	rm -f README.html index.html
+	rm -f README.html index.html rk86_plus3/index.html
 
 .PHONY: all clean
