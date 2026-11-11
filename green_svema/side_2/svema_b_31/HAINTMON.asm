@@ -15,14 +15,18 @@
 ;
 ; Layout of the 1170-byte image:
 ;   #386E-#39FF  zeros (#3900-#39FF is the IM 2 vector table for I=#39)
-;   #3A00-#3A65  the monitor (below)
-;   #3A66-#3C6F  #FF, unused
+;   #3A00-#3AD3  the monitor (below)
+;   #3AD4-#3C6F  #FF, unused
 ;   #3C70-#3CCF  NMI handler that was already in this ROM, with the text
 ;                "COMPLETE  OLEG BOIKO     MINSK   1990" (listed at the end)
 ;
-; OPEN QUESTION: with the table all zeros the IM 2 vector is #0000 (or #CD00
-; if the bus floats to #FF), not #3A00/#3A03.  Either address 0 of the ROM copy
-; was patched separately, or this saved version is unfinished.
+; As saved it does not seem to work.  The table is all zeros and the Baltik
+; puts #FF on the data bus, so the IM 2 vector is read from #39FF and #3A00:
+; low byte 0, high byte = the first byte of the monitor, #CD (CALL).  The
+; interrupt goes to #CD00.  The same trick works in the Radio-86RK emulator
+; from this tape because its handler starts with PUSH AF = #F5 and I is #F5;
+; here the first byte would have to be #39, ADD HL,SP.  On a stock ROM with
+; empty memory the CPU runs from #CD00 over zeros and the UDGs into #0005.
 
 ; ---------------------------------------------------------------------------
 ; "Haintmonc$": ROM -> shadow RAM.  The control port is written as OUT (0),A,
