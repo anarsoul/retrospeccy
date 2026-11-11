@@ -20,6 +20,7 @@
 ;   - клавиши опрашиваются каждый кадр, а не один раз за ход;
 ;   - скорость можно менять цифрой перед каждой партией, на экране
 ;     "НАЖМИТЕ <ВК>" (в оригинале она спрашивалась один раз при запуске);
+;   - за каждую съеденную еду весь экран меняет цвет (в оригинале цвета нет);
 ;   - очередь хвоста 2048 звеньев вместо 384 (в оригинале она переполнялась),
 ;     стек не утекает при каждой новой игре.
 ;
@@ -32,7 +33,7 @@ BUF     EQU #C000               ; "видеопамять" 64x24; адрес к�
 BUFLEN  EQU 64*24
 QUEUE   EQU #C800               ; кольцевая очередь адресов звеньев
 QLEN    EQU #1000
-INK     EQU #44                 ; ярко-зелёный по чёрному
+INK     EQU #44                 ; ярко-зелёный по чёрному - цвет в начале партии
 
 EMPTY   EQU 0
 WALL    EQU '+'
@@ -204,8 +205,9 @@ move:   ld a,(delay)
         or a
         jr z,step
         cp FOOD
-        jr z,food
-        jp restart
+        jp nz,restart
+        call nextink            ; съел - весь экран другого цвета
+        jp food
 
 qwrap:  ld a,h
         cp high (QUEUE + QLEN)
@@ -293,13 +295,29 @@ cls:    ld hl,#4000
         ld bc,#1800
         ld (hl),l
         ldir
-        ld bc,#02FF
-        ld (hl),INK
-        ldir
+        ld a,INK
+        call setink
         ld hl,BUF
         ld de,BUF + 1
         ld bc,BUFLEN - 1
         ld (hl),EMPTY
+        ldir
+        ret
+
+; Следующий цвет знаков по кругу: 4 5 6 7 2 3 (яркие, по чёрному;
+; синий слишком тёмный).
+nextink:
+        ld a,(ink)
+        inc a
+        cp #48
+        jr c,setink
+        ld a,#42
+; Атрибут A на весь экран.
+setink: ld (ink),a
+        ld hl,#5800
+        ld de,#5801
+        ld bc,#02FF
+        ld (hl),a
         ldir
         ret
 
@@ -427,10 +445,10 @@ t_speed:
         DW BUF + 2*64
         DB "skorostx (0..9)?",0         ; СКОРОСТЬ (0..9)?
 t_press:
-        DW BUF + 23*64 + 25
+        DW BUF + 23*64 + 18
         DB " navmite <wk>",0            ; НАЖМИТЕ <ВК>
 t_spd:
-        DW BUF + 23*64 + 39
+        DW BUF + 23*64 + 32
         DB " skorostx - ",0             ; СКОРОСТЬ - n
 t_len:
         DW BUF + 26
@@ -443,6 +461,7 @@ qhead:  DW 0
 qtail:  DW 0
 grow:   DB 0                    ; сколько ещё расти
 delay:  DB 0                    ; кадров на ход
+ink:    DB INK                  ; текущий атрибут экрана
 code_end:
 
 ; --- загрузчик на BASIC ----------------------------------------------------
