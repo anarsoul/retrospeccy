@@ -35,7 +35,7 @@ h2 { border-bottom: 1px solid #ccc; padding-bottom: .2em; margin-top: 2em; }
 endef
 export HEAD
 
-all: README.html index.html rk86_plus3/index.html
+all: README.html index.html rk86_plus3/index.html sampler/index.html
 
 # GitHub Pages serves index.html; it is the same page.
 index.html: README.html
@@ -56,7 +56,11 @@ rk86_plus3/index.html: TITLE := Эмулятор «Радио-86РК» для ZX
 rk86_plus3/index.html: rk86_plus3/README.md Makefile readme_ids.py
 	$(RENDER)
 
+sampler/index.html: TITLE := Однобитный сэмплер со сжатием для ZX Spectrum 48K
+sampler/index.html: sampler/README.md Makefile readme_ids.py
+	$(RENDER)
+
 clean:
-	rm -f README.html index.html rk86_plus3/index.html
+	rm -f README.html index.html rk86_plus3/index.html sampler/index.html
 
 .PHONY: all clean
