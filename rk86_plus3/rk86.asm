@@ -1418,6 +1418,8 @@ font:   INCBIN "../green_svema/side_1/svema_27/12_Radio_Font.bin"
         jp gettop               ; #F830 граница памяти
         jp settop               ; #F833
         ASSERT $ == #F836
+        jp start                ; #F836: в Мониторе РК здесь начинается холодный
+                                ; старт, и программы выходят сюда напрямую
         BLOCK #F86C - $, 0
         jp warm                 ; #F86C тёплый старт, как у Монитора РК
 image_end:

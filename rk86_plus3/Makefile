@@ -1,4 +1,4 @@
-all: rk86.tap piton.tap basic.tap rdisk1.tap rdisk2.tap
+all: rk86.tap piton.tap basic.tap rdisk1.tap rdisk2.tap dumpcor.tap
 
 rk86.tap: rk86.asm ../green_svema/side_1/svema_27/12_Radio_Font.bin
 	sjasmplus --nologo --msg=war rk86.asm
@@ -29,5 +29,9 @@ basic.tap: BASIC80.RKR rkr2tap.py Makefile
 # RAMDOS V2.01 with its RAM disk, as memory images: no patches needed.
 rdisk%.tap: RDISK%.PKI rkr2tap.py
 	./rkr2tap.py $< $@
+
+# DUMPCOR: a 512-byte screen memory editor at #7400.  No patches needed.
+dumpcor.tap: DUMPCOR1.RK rkr2tap.py
+	./rkr2tap.py DUMPCOR1.RK dumpcor.tap
 
 .PHONY: all
